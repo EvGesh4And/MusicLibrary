@@ -1,0 +1,16 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "description": "API для управления песнями в библиотеке. Позволяет пользователям получать информацию о песнях, добавлять новые, обновлять и удалять существующие.",
+        "title": "Music API",
+        "termsOfService": "http://swagger.io/terms/",
+        "contact": {
+            "name": "Евгений",
+            "email": "i@evgesh4.ru"
+        },
+        "version": "1.0"
+    },
+    "host": "localhost:8080",
+    "basePath": "/songs",
+    "paths": {}
+}

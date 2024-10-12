@@ -1,0 +1,13 @@
+basePath: /songs
+host: localhost:8080
+info:
+  contact:
+    email: i@evgesh4.ru
+    name: Евгений
+  description: API для управления песнями в библиотеке. Позволяет пользователям получать
+    информацию о песнях, добавлять новые, обновлять и удалять существующие.
+  termsOfService: http://swagger.io/terms/
+  title: Music API
+  version: "1.0"
+paths: {}
+swagger: "2.0"
