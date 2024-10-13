@@ -17,13 +17,19 @@ import (
 	"MusicLibrary/routes"
 	"os"
 
+	"github.com/joho/godotenv"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
 )
 
 func main() {
 	// Инициализируем логгер
-	log := logger.InitLogger() // Используем функцию из logger.go
+	log := logger.InitLogger()
+
+	// Загружаем переменные окружения из файла .env
+	if err := godotenv.Load(); err != nil {
+		log.Fatalf("Error loading .env file: %v", err)
+	}
 
 	// Инициализация базы данных с логгером
 	database.Init(log)

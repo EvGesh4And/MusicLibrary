@@ -11,7 +11,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/joho/godotenv"   // Библиотека для работы с файлами .env
+	// Библиотека для работы с файлами .env
 	"github.com/sirupsen/logrus" // Логирование
 	"gorm.io/driver/postgres"    // Драйвер для PostgreSQL
 	"gorm.io/gorm"               // GORM — ORM-библиотека для Go
@@ -25,11 +25,6 @@ var DB *gorm.DB
 // @Description Устанавливает соединение с PostgreSQL и загружает параметры из .env файла.
 // @Tags database
 func Init(logger *logrus.Logger) {
-	// Загружаем переменные окружения из файла .env
-	if err := godotenv.Load(); err != nil {
-		logger.Fatalf("Error loading .env file: %v", err)
-	}
-
 	// Формируем строку подключения к базе данных
 	dbURI := fmt.Sprintf("host=%s port=%s user=%s dbname=%s password=%s sslmode=disable",
 		os.Getenv("DB_HOST"), os.Getenv("DB_PORT"), os.Getenv("DB_USER"), os.Getenv("DB_NAME"), os.Getenv("DB_PASSWORD"))
