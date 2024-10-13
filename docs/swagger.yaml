@@ -102,7 +102,7 @@ paths:
         in: query
         name: song
         type: string
-      - description: Дата выпуска
+      - description: Дата выпуска в формате DD.MM.YYYY
         in: query
         name: releaseDate
         type: string
@@ -238,8 +238,9 @@ paths:
       - application/json
       description: Обновляет информацию о песне по её ID. Можно передавать только
         те поля модели, которые требуется изменить; остальные останутся без изменений.
+        Изменение ID песни не допускается.
       parameters:
-      - description: ID песни
+      - description: ID песни. Изменение ID не допускается.
         in: path
         name: id
         required: true

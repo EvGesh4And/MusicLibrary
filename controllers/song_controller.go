@@ -27,7 +27,7 @@ import (
 // @Produce json
 // @Param group query string false "Название группы"
 // @Param song query string false "Название песни"
-// @Param releaseDate query string false "Дата выпуска"
+// @Param releaseDate query string false "Дата выпуска в формате DD.MM.YYYY"
 // @Param page query int false "Номер страницы" default(1)
 // @Param limit query int false "Количество песен на странице" default(5)
 // @Success 200 {object} models.ResponseAllSongs "Список песен"
@@ -71,6 +71,21 @@ func GetAllSongs(logger *logrus.Logger) gin.HandlerFunc {
 			query = query.Where("song ILIKE ?", "%"+song+"%")
 		}
 		if releaseDate != "" {
+			// Проверка формата даты
+			parsedDate, err := time.Parse("02.01.2006", releaseDate)
+			if err != nil {
+				logger.Warnf("Invalid date format for releaseDate: %s, error: %v", releaseDate, err)
+				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid date format. Expected format: DD.MM.YYYY"})
+				return
+			}
+
+			// Проверка, что дата не позднее сегодняшнего дня
+			if parsedDate.After(time.Now().Truncate(24 * time.Hour)) {
+				logger.Warnf("Release date cannot be in the future: %s", releaseDate)
+				c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Release date cannot be in the future"})
+				return
+			}
+
 			query = query.Where("\"releaseDate\" = ?", releaseDate)
 		}
 
@@ -245,12 +260,12 @@ func CreateSong(logger *logrus.Logger) gin.HandlerFunc {
 
 // UpdateSong обновляет данные песни по ID.
 // @Summary Обновление песни
-// @Description Обновляет информацию о песне по её ID. Можно передавать только те поля модели, которые требуется изменить; остальные останутся без изменений.
+// @Description Обновляет информацию о песне по её ID. Можно передавать только те поля модели, которые требуется изменить; остальные останутся без изменений. Изменение ID песни не допускается.
 // Ожидаемый формат даты: DD.MM.YYYY
 // @Tags songs
 // @Accept json
 // @Produce json
-// @Param id path int true "ID песни"
+// @Param id path int true "ID песни. Изменение ID не допускается."
 // @Param song body models.Song true "Обновлённые данные песни (частичное обновление допускается). Формат даты releaseDate: DD.MM.YYYY"
 // @Success 200 {object} models.Song "Обновлённая песня"
 // @Failure 400 {object} models.ErrorResponse "Ошибка запроса"
@@ -274,6 +289,13 @@ func UpdateSong(logger *logrus.Logger) gin.HandlerFunc {
 		if err := c.ShouldBindJSON(&input); err != nil {
 			logger.Warnf("Failed to bind JSON for updating song ID: %s, error: %v", id, err)
 			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: err.Error()})
+			return
+		}
+
+		// Проверка на изменение ID
+		if input.ID != 0 && input.ID != song.ID {
+			logger.Warnf("Attempt to change ID for song ID: %s, new ID: %d", id, input.ID)
+			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Changing the song ID is not allowed"})
 			return
 		}
 

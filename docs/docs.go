@@ -46,7 +46,7 @@ const docTemplate = `{
                     },
                     {
                         "type": "string",
-                        "description": "Дата выпуска",
+                        "description": "Дата выпуска в формате DD.MM.YYYY",
                         "name": "releaseDate",
                         "in": "query"
                     },
@@ -195,7 +195,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Обновляет информацию о песне по её ID. Можно передавать только те поля модели, которые требуется изменить; остальные останутся без изменений.",
+                "description": "Обновляет информацию о песне по её ID. Можно передавать только те поля модели, которые требуется изменить; остальные останутся без изменений. Изменение ID песни не допускается.",
                 "consumes": [
                     "application/json"
                 ],
@@ -209,7 +209,7 @@ const docTemplate = `{
                 "parameters": [
                     {
                         "type": "integer",
-                        "description": "ID песни",
+                        "description": "ID песни. Изменение ID не допускается.",
                         "name": "id",
                         "in": "path",
                         "required": true
