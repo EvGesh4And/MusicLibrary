@@ -30,7 +30,7 @@ definitions:
         type: integer
       page:
         type: integer
-      release_date:
+      releaseDate:
         type: string
       song:
         type: string
@@ -51,7 +51,7 @@ definitions:
         type: integer
       link:
         type: string
-      release_date:
+      releaseDate:
         type: string
       song:
         type: string
@@ -104,7 +104,7 @@ paths:
         type: string
       - description: Дата выпуска
         in: query
-        name: release_date
+        name: releaseDate
         type: string
       - default: 1
         description: Номер страницы
@@ -236,14 +236,16 @@ paths:
     put:
       consumes:
       - application/json
-      description: Обновляет информацию о песне по её ID.
+      description: Обновляет информацию о песне по её ID. Можно передавать только
+        те поля модели, которые требуется изменить; остальные останутся без изменений.
       parameters:
       - description: ID песни
         in: path
         name: id
         required: true
         type: integer
-      - description: Обновлённые данные песни
+      - description: 'Обновлённые данные песни (частичное обновление допускается).
+          Формат даты releaseDate: DD.MM.YYYY'
         in: body
         name: song
         required: true

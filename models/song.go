@@ -17,10 +17,10 @@ type SongInput struct {
 type Song struct {
 	ID          uint   `gorm:"primaryKey" json:"id"`
 	Group       string `gorm:"column:group" json:"group"`
-	Song        string `json:"song"`
-	ReleaseDate string `json:"release_date"`
-	Text        string `json:"text"`
-	Link        string `json:"link"`
+	Song        string `gorm:"column:song" json:"song"`
+	ReleaseDate string `gorm:"column:releaseDate" json:"releaseDate"`
+	Text        string `gorm:"column:text" json:"text"`
+	Link        string `gorm:"column:link" json:"link"`
 }
 
 // ResponseAllSongs описывает структуру ответа для получения всех песен.
@@ -37,7 +37,7 @@ type ResponseAllSongs struct {
 type ResponseSongVerses struct {
 	Song        string   `json:"song"`
 	Group       string   `json:"group"`
-	ReleaseDate string   `json:"release_date"`
+	ReleaseDate string   `json:"releaseDate"`
 	Verses      []string `json:"verses"`
 	Page        int      `json:"page"`
 	Limit       int      `json:"limit"`

@@ -47,7 +47,7 @@ const docTemplate = `{
                     {
                         "type": "string",
                         "description": "Дата выпуска",
-                        "name": "release_date",
+                        "name": "releaseDate",
                         "in": "query"
                     },
                     {
@@ -195,7 +195,7 @@ const docTemplate = `{
                 }
             },
             "put": {
-                "description": "Обновляет информацию о песне по её ID.",
+                "description": "Обновляет информацию о песне по её ID. Можно передавать только те поля модели, которые требуется изменить; остальные останутся без изменений.",
                 "consumes": [
                     "application/json"
                 ],
@@ -215,7 +215,7 @@ const docTemplate = `{
                         "required": true
                     },
                     {
-                        "description": "Обновлённые данные песни",
+                        "description": "Обновлённые данные песни (частичное обновление допускается). Формат даты releaseDate: DD.MM.YYYY",
                         "name": "song",
                         "in": "body",
                         "required": true,
@@ -337,7 +337,7 @@ const docTemplate = `{
                 "page": {
                     "type": "integer"
                 },
-                "release_date": {
+                "releaseDate": {
                     "type": "string"
                 },
                 "song": {
@@ -367,7 +367,7 @@ const docTemplate = `{
                 "link": {
                     "type": "string"
                 },
-                "release_date": {
+                "releaseDate": {
                     "type": "string"
                 },
                 "song": {
