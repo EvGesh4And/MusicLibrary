@@ -37,7 +37,7 @@ func SetupRouter(logger *logrus.Logger) *gin.Engine {
 		songRoutes.POST("", controllers.CreateSong(logger)) // Убедитесь, что используете "" вместо "/"
 
 		// PATCH /songs/{id} — маршрут для обновления данных о песне по ID
-		logger.Infof("Setting up route: PU /songs/{id}")
+		logger.Infof("Setting up route: PATCH /songs/{id}")
 		songRoutes.PATCH("/:id", controllers.UpdateSong(logger))
 
 		// DELETE /songs/{id} — маршрут для удаления песни по ID

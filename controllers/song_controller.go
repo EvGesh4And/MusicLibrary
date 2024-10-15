@@ -271,7 +271,7 @@ func CreateSong(logger *logrus.Logger) gin.HandlerFunc {
 // @Failure 400 {object} models.ErrorResponse "Ошибка запроса"
 // @Failure 404 {object} models.ErrorResponse "Песня не найдена"
 // @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка сервера"
-// @Router /songs/{id} [put]
+// @Router /songs/{id} [patch]
 func UpdateSong(logger *logrus.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var song models.Song
