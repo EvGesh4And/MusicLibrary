@@ -233,7 +233,7 @@ paths:
       summary: Получение куплетов песни
       tags:
       - songs
-    put:
+    patch:
       consumes:
       - application/json
       description: Обновляет информацию о песне по её ID. Можно передавать только
