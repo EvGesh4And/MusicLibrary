@@ -131,10 +131,11 @@ func GetAllSongs(logger *logrus.Logger) gin.HandlerFunc {
 // @Param id path int true "ID песни"
 // @Param page query int false "Номер страницы" default(1)
 // @Param limit query int false "Лимит на куплеты" default(1)
-// @Success 200 {object} models.ResponseSongVerses "Информация о песне и ее куплеты"
-// @Failure 404 {object} models.ErrorResponse "Песня не найдена или куплеты закончились"
+// @Success 200 {object} models.ResponseSongVerses "Информация о песне и ее куплеты, пустой список, если куплеты отсутствуют на запрашиваемой странице"
+// @Failure 400 {object} models.ErrorResponse "Неверный параметр запроса"
+// @Failure 404 {object} models.ErrorResponse "Песня не найдена"
 // @Failure 500 {object} models.ErrorResponse "Внутренняя ошибка сервера"
-// @Router /songs/{id} [get]
+// @Router /songs/{id}/verses [get]
 func GetSongVerses(logger *logrus.Logger) gin.HandlerFunc {
 	return func(c *gin.Context) {
 		var song models.Song
@@ -151,36 +152,49 @@ func GetSongVerses(logger *logrus.Logger) gin.HandlerFunc {
 		pageStr := c.DefaultQuery("page", "1")
 		limitStr := c.DefaultQuery("limit", "1")
 
-		// Конвертация номера страницы и лимита в числа.
-		page, err := strconv.Atoi(pageStr)
-		if err != nil || page < 1 {
-			page = 1
+		// Конвертация номера страницы и лимита в числа с проверками.
+		pageInt, err := strconv.Atoi(pageStr)
+		if err != nil || pageInt < 1 {
+			logger.Warnf("Invalid page parameter: %s", pageStr)
+			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid page parameter"})
+			return
 		}
 
-		limit, err := strconv.Atoi(limitStr)
-		if err != nil || limit < 1 {
-			limit = 1 // По умолчанию один куплет на странице
+		limitInt, err := strconv.Atoi(limitStr)
+		if err != nil || limitInt < 1 {
+			logger.Warnf("Invalid limit parameter: %s", limitStr)
+			c.JSON(http.StatusBadRequest, models.ErrorResponse{Error: "Invalid limit parameter"})
+			return
 		}
 
 		// Разделяем текст песни на куплеты, используя \n\n как разделитель.
 		verses := strings.Split(song.Text, "\n\n")
 
 		// Вычисляем индексы для пагинации.
-		start := (page - 1) * limit
-		end := start + limit
+		start := (pageInt - 1) * limitInt
+		end := start + limitInt
 
 		// Проверка границ.
 		if start >= len(verses) {
 			logger.Warnf("No more verses available for song ID: %s", id)
-			c.JSON(http.StatusNotFound, models.ErrorResponse{Error: "No more verses available"})
+			// Возвращаем пустой список, соответствующий REST.
+			c.JSON(http.StatusOK, models.ResponseSongVerses{
+				Song:        song.Song,
+				Group:       song.Group,
+				ReleaseDate: song.ReleaseDate,
+				Verses:      []string{},
+				Page:        pageInt,
+				Limit:       limitInt,
+				Total:       len(verses),
+			})
 			return
 		}
 		if end > len(verses) {
 			end = len(verses)
 		}
 
-		// Логируем успешное получение куплетов
-		logger.Infof("Returning verses for song ID: %s, page: %d, limit: %d", id, page, limit)
+		// Логируем успешное получение куплетов.
+		logger.Infof("Returning verses for song ID: %s, page: %d, limit: %d", id, pageInt, limitInt)
 
 		// Создаем ответ.
 		response := models.ResponseSongVerses{
@@ -188,8 +202,8 @@ func GetSongVerses(logger *logrus.Logger) gin.HandlerFunc {
 			Group:       song.Group,
 			ReleaseDate: song.ReleaseDate,
 			Verses:      verses[start:end],
-			Page:        page,
-			Limit:       limit,
+			Page:        pageInt,
+			Limit:       limitInt,
 			Total:       len(verses),
 		}
 

@@ -138,18 +138,15 @@ const docTemplate = `{
             }
         },
         "/songs/{id}": {
-            "get": {
-                "description": "Возвращает куплеты песни по указанному ID с поддержкой пагинации.",
-                "consumes": [
-                    "application/json"
-                ],
+            "delete": {
+                "description": "Удаляет песню из библиотеки по её ID.",
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "songs"
                 ],
-                "summary": "Получение куплетов песни",
+                "summary": "Удаление песни",
                 "parameters": [
                     {
                         "type": "integer",
@@ -157,31 +154,17 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Номер страницы",
-                        "name": "page",
-                        "in": "query"
-                    },
-                    {
-                        "type": "integer",
-                        "default": 1,
-                        "description": "Лимит на куплеты",
-                        "name": "limit",
-                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Информация о песне и ее куплеты",
+                        "description": "Песня успешно удалена",
                         "schema": {
-                            "$ref": "#/definitions/models.ResponseSongVerses"
+                            "$ref": "#/definitions/models.SuccessResponse"
                         }
                     },
                     "404": {
-                        "description": "Песня не найдена или куплеты закончились",
+                        "description": "Песня не найдена",
                         "schema": {
                             "$ref": "#/definitions/models.ErrorResponse"
                         }
@@ -250,16 +233,21 @@ const docTemplate = `{
                         }
                     }
                 }
-            },
-            "delete": {
-                "description": "Удаляет песню из библиотеки по её ID.",
+            }
+        },
+        "/songs/{id}/verses": {
+            "get": {
+                "description": "Возвращает куплеты песни по указанному ID с поддержкой пагинации.",
+                "consumes": [
+                    "application/json"
+                ],
                 "produces": [
                     "application/json"
                 ],
                 "tags": [
                     "songs"
                 ],
-                "summary": "Удаление песни",
+                "summary": "Получение куплетов песни",
                 "parameters": [
                     {
                         "type": "integer",
@@ -267,13 +255,33 @@ const docTemplate = `{
                         "name": "id",
                         "in": "path",
                         "required": true
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Номер страницы",
+                        "name": "page",
+                        "in": "query"
+                    },
+                    {
+                        "type": "integer",
+                        "default": 1,
+                        "description": "Лимит на куплеты",
+                        "name": "limit",
+                        "in": "query"
                     }
                 ],
                 "responses": {
                     "200": {
-                        "description": "Песня успешно удалена",
+                        "description": "Информация о песне и ее куплеты, пустой список, если куплеты отсутствуют на запрашиваемой странице",
                         "schema": {
-                            "$ref": "#/definitions/models.SuccessResponse"
+                            "$ref": "#/definitions/models.ResponseSongVerses"
+                        }
+                    },
+                    "400": {
+                        "description": "Неверный параметр запроса",
+                        "schema": {
+                            "$ref": "#/definitions/models.ErrorResponse"
                         }
                     },
                     "404": {

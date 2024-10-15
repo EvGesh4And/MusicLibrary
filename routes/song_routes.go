@@ -26,15 +26,15 @@ func SetupRouter(logger *logrus.Logger) *gin.Engine {
 	{
 		// GET /songs — маршрут для получения всех песен
 		logger.Infof("Setting up route: GET /songs")
-		songRoutes.GET("", controllers.GetAllSongs(logger)) // Убедитесь, что используете "" вместо "/"
+		songRoutes.GET("", controllers.GetAllSongs(logger))
 
-		// GET /songs/{id} — маршрут для получения текста песни по ID
-		logger.Infof("Setting up route: GET /songs/{id}")
-		songRoutes.GET("/:id", controllers.GetSongVerses(logger))
+		// GET /songs/{id}/verses — маршрут для получения куплетов песни по ID
+		logger.Infof("Setting up route: GET /songs/{id}/verses")
+		songRoutes.GET("/:id/verses", controllers.GetSongVerses(logger))
 
 		// POST /songs — маршрут для создания новой песни
 		logger.Infof("Setting up route: POST /songs")
-		songRoutes.POST("", controllers.CreateSong(logger)) // Убедитесь, что используете "" вместо "/"
+		songRoutes.POST("", controllers.CreateSong(logger))
 
 		// PATCH /songs/{id} — маршрут для обновления данных о песне по ID
 		logger.Infof("Setting up route: PATCH /songs/{id}")

@@ -195,44 +195,6 @@ paths:
       summary: Удаление песни
       tags:
       - songs
-    get:
-      consumes:
-      - application/json
-      description: Возвращает куплеты песни по указанному ID с поддержкой пагинации.
-      parameters:
-      - description: ID песни
-        in: path
-        name: id
-        required: true
-        type: integer
-      - default: 1
-        description: Номер страницы
-        in: query
-        name: page
-        type: integer
-      - default: 1
-        description: Лимит на куплеты
-        in: query
-        name: limit
-        type: integer
-      produces:
-      - application/json
-      responses:
-        "200":
-          description: Информация о песне и ее куплеты
-          schema:
-            $ref: '#/definitions/models.ResponseSongVerses'
-        "404":
-          description: Песня не найдена или куплеты закончились
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-        "500":
-          description: Внутренняя ошибка сервера
-          schema:
-            $ref: '#/definitions/models.ErrorResponse'
-      summary: Получение куплетов песни
-      tags:
-      - songs
     patch:
       consumes:
       - application/json
@@ -272,6 +234,50 @@ paths:
           schema:
             $ref: '#/definitions/models.ErrorResponse'
       summary: Обновление песни
+      tags:
+      - songs
+  /songs/{id}/verses:
+    get:
+      consumes:
+      - application/json
+      description: Возвращает куплеты песни по указанному ID с поддержкой пагинации.
+      parameters:
+      - description: ID песни
+        in: path
+        name: id
+        required: true
+        type: integer
+      - default: 1
+        description: Номер страницы
+        in: query
+        name: page
+        type: integer
+      - default: 1
+        description: Лимит на куплеты
+        in: query
+        name: limit
+        type: integer
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Информация о песне и ее куплеты, пустой список, если куплеты
+            отсутствуют на запрашиваемой странице
+          schema:
+            $ref: '#/definitions/models.ResponseSongVerses'
+        "400":
+          description: Неверный параметр запроса
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "404":
+          description: Песня не найдена
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+        "500":
+          description: Внутренняя ошибка сервера
+          schema:
+            $ref: '#/definitions/models.ErrorResponse'
+      summary: Получение куплетов песни
       tags:
       - songs
 swagger: "2.0"
